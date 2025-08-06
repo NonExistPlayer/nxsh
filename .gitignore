@@ -10,3 +10,4 @@ Ax-Shell.code-workspace
 config/dock.json
 config/dock.json.bak
 AGENTS.md
+pyrightconfig.json
