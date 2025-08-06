@@ -1,8 +1,10 @@
 __pycache__
 styles/colors.css
 config/config.json
+config/hypr/nxsh.conf
 config/hypr/ax-shell.conf
 config/hypr/colors.conf
+NxShell.code-workspace
 Ax-Shell.code-workspace
 .aider*
 config/dock.json
