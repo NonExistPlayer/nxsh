@@ -889,17 +889,16 @@ class HyprConfGUI(Window):
         )
         vbox.add(
             Label(
-                label="A hackable shell for Hyprland, powered by Fabric.",
+                markup="A hackable shell for Hyprland, powered by Fabric.\n"
+                + 'Forked from <a href="https://github.com/Axenide/Ax-Shell">Ax-Shell</a>.',
                 h_align="start",
                 style="margin-bottom: 12px;",
             )
         )
         repo_box = Box(orientation="h", spacing=6, h_align="start")
-        repo_label = Label(label="GitHub:", h_align="start")
         repo_link = Label(
-            markup='<a href="https://github.com/Axenide/Ax-Shell">https://github.com/Axenide/Ax-Shell</a>'
+            markup='<a href="https://github.com/NonExistPlayer/nxsh">GitHub</a>.'
         )
-        repo_box.add(repo_label)
         repo_box.add(repo_link)
         vbox.add(repo_box)
 
@@ -909,9 +908,9 @@ class HyprConfGUI(Window):
             webbrowser.open("https://ko-fi.com/Axenide")
 
         kofi_btn = Button(
-            label="Support on Ko-Fi ❤️",
+            label="Support Axenide on Ko-Fi ❤️",
             on_clicked=on_kofi_clicked,
-            tooltip_text="Support Axenide on Ko-Fi",
+            tooltip_text="Support Ax-Shell author on Ko-Fi",
             style="margin-top: 18px; min-width: 160px;",
         )
         vbox.add(kofi_btn)
