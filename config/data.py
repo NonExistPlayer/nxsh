@@ -7,8 +7,8 @@ gi.require_version("Gtk", "3.0")
 from fabric.utils.helpers import get_relative_path
 from gi.repository import Gdk, GLib
 
-APP_NAME = "ax-shell"
-APP_NAME_CAP = "Ax-Shell"
+APP_NAME = "nxsh"
+APP_NAME_CAP = "NxShell"
 
 
 PANEL_POSITION_KEY = "panel_position"
