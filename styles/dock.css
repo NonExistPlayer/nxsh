@@ -82,17 +82,12 @@
 }
 
 #dock-app-button:hover.instance {
-  background-color: var(--outline);
+  background-color: var(--secondary);
 }
 
 #dock-app-button:active,
 #dock-app-button:active.instance {
   background-color: var(--primary);
-}
-
-#dock-app-button.instance {
-  background: var(--surface-bright);
-  border-radius: 12px;
 }
 
 #dock-corner-left {
