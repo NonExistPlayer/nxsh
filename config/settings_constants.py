@@ -14,47 +14,99 @@ source = ~/.config/{APP_NAME_CAP}/config/hypr/{APP_NAME}.conf
 """
 
 DEFAULTS = {
-    "prefix_restart": "SUPER ALT",
-    "suffix_restart": "B",
-    "prefix_axmsg": "SUPER",
-    "suffix_axmsg": "A",
-    "prefix_dash": "SUPER",
-    "suffix_dash": "D",
-    "prefix_bluetooth": "SUPER",
-    "suffix_bluetooth": "B",
-    "prefix_pins": "SUPER",
-    "suffix_pins": "Q",
-    "prefix_kanban": "SUPER",
-    "suffix_kanban": "N",
-    "prefix_launcher": "SUPER",
-    "suffix_launcher": "R",
-    "prefix_tmux": "SUPER",
-    "suffix_tmux": "T",
-    "prefix_cliphist": "SUPER",
-    "suffix_cliphist": "V",
-    "prefix_toolbox": "SUPER",
-    "suffix_toolbox": "S",
-    "prefix_overview": "SUPER",
-    "suffix_overview": "TAB",
-    "prefix_wallpapers": "SUPER",
-    "suffix_wallpapers": "COMMA",
-    "prefix_randwall": "SUPER SHIFT",
-    "suffix_randwall": "COMMA",
-    "prefix_mixer": "SUPER",
-    "suffix_mixer": "M",
-    "prefix_emoji": "SUPER",
-    "suffix_emoji": "PERIOD",
-    "prefix_power": "SUPER",
-    "suffix_power": "ESCAPE",
-    "prefix_caffeine": "SUPER SHIFT",
-    "suffix_caffeine": "M",
-    "prefix_toggle": "SUPER CTRL",
-    "suffix_toggle": "B",
-    "prefix_css": "SUPER SHIFT",
-    "suffix_css": "B",
+    "hotkeys": {
+        "restart": {
+            "prefix": "SUPER ALT",
+            "suffix": "B",
+            "enabled": True
+        },
+        "dash": {
+            "prefix": "SUPER",
+            "suffix": "W",
+            "enabled": True
+        },
+        "bluetooth": {
+            "prefix": "SUPER",
+            "suffix": "Y",
+            "enabled": False
+        },
+        "pins": {
+            "prefix": "SUPER",
+            "suffix": "Q",
+            "enabled": False
+        },
+        "kanban": {
+            "prefix": "SUPER",
+            "suffix": "N",
+            "enabled": True
+        },
+        "launcher": {
+            "prefix": "SUPER",
+            "suffix": "TAB",
+            "enabled": True
+        },
+        "tmux": {
+            "prefix": "SUPER",
+            "suffix": "T",
+            "enabled": False
+        },
+        "cliphist": {
+            "prefix": "SUPER",
+            "suffix": "B",
+            "enabled": True
+        },
+        "toolbox": {
+            "prefix": "SUPER",
+            "suffix": "F",
+            "enabled": True
+        },
+        "overview": {
+            "prefix": "SUPER",
+            "suffix": "O",
+            "enabled": True
+        },
+        "wallpapers": {
+            "prefix": "SUPER",
+            "suffix": "COMMA",
+            "enabled": True
+        },
+        "randwall": {
+            "prefix": "SUPER SHIFT",
+            "suffix": "COMMA",
+            "enabled": False
+        },
+        "mixer": {
+            "prefix": "SUPER",
+            "suffix": "L",
+            "enabled": True
+        },
+        "emoji": {
+            "prefix": "SUPER",
+            "suffix": "PERIOD",
+            "enabled": True
+        },
+        "power": {
+            "prefix": "SUPER",
+            "suffix": "ESCAPE",
+            "enabled": True
+        },
+        "caffeine": {
+            "prefix": "SUPER SHIFT",
+            "suffix": "C",
+            "enabled": False
+        },
+        "css": {
+            "prefix": "SUPER SHIFT",
+            "suffix": "B",
+            "enabled": True
+        },
+        "inspector": {
+            "prefix": "SUPER CTRL ALT",
+            "suffix": "B",
+            "enabled": False
+        }
+    },
     "wallpapers_dir": WALLPAPERS_DIR_DEFAULT,
-    "prefix_restart_inspector": "SUPER CTRL ALT",
-    "suffix_restart_inspector": "B",
     "bar_position": "Top",  # New default position setting
     "vertical": False,  # Kept for backward compatibility
     "centered_bar": False,

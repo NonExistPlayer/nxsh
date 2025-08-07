@@ -236,89 +236,53 @@ def generate_hyprconf() -> str:
     Generate the Hypr configuration string using the current bind_vars.
     """
     home = os.path.expanduser("~")
-    # Determine animation type based on bar position
-    bar_position = bind_vars.get("bar_position", "Top")
-    is_vertical = bar_position in ["Left", "Right"]
-    animation_type = "slidefadevert" if is_vertical else "slidefade"
-
-    return f"""exec-once = uwsm-app $(python {home}/.config/{APP_NAME_CAP}/main.py)
+    config = f"""# This is an automatically generated configuration. All changes will be lost after applying in the GUI settings.
+# To override config generation, change the generate_hyprconf() function in 'config/settings_utils.py' (line 236).
+exec-once = uwsm-app $(python {home}/.config/{APP_NAME_CAP}/main.py)
 exec = pgrep -x "hypridle" > /dev/null || uwsm app -- hypridle
-exec-once = uwsm app -- swww-daemon
-exec-once =  wl-paste --type text --watch cliphist store
-exec-once =  wl-paste --type image --watch cliphist store
+exec = uwsm app -- swww-daemon
+exec-once = wl-paste --type text --watch cliphist store
+exec-once = wl-paste --type image --watch cliphist store
 
 $fabricSend = fabric-cli exec {APP_NAME}
-$axMessage = notify-send "Axenide" "FIRE IN THE HOLE‼️🗣️🔥🕳️" -i "{home}/.config/{APP_NAME_CAP}/assets/ax.png" -A "🗣️" -A "🔥" -A "🕳️" -a "Source Code"
-
-bind = {bind_vars.get("prefix_restart", "SUPER ALT")}, {bind_vars.get("suffix_restart", "B")}, exec, killall {APP_NAME}; uwsm-app $(python {home}/.config/{APP_NAME_CAP}/main.py) # Reload {APP_NAME_CAP}
-bind = {bind_vars.get("prefix_axmsg", "SUPER")}, {bind_vars.get("suffix_axmsg", "A")}, exec, $axMessage # Message
-bind = {bind_vars.get("prefix_dash", "SUPER")}, {bind_vars.get("suffix_dash", "D")}, exec, $fabricSend 'notch.open_notch("dashboard")' # Dashboard
-bind = {bind_vars.get("prefix_bluetooth", "SUPER")}, {bind_vars.get("suffix_bluetooth", "B")}, exec, $fabricSend 'notch.open_notch("bluetooth")' # Bluetooth
-bind = {bind_vars.get("prefix_pins", "SUPER")}, {bind_vars.get("suffix_pins", "Q")}, exec, $fabricSend 'notch.open_notch("pins")' # Pins
-bind = {bind_vars.get("prefix_kanban", "SUPER")}, {bind_vars.get("suffix_kanban", "N")}, exec, $fabricSend 'notch.open_notch("kanban")' # Kanban
-bind = {bind_vars.get("prefix_launcher", "SUPER")}, {bind_vars.get("suffix_launcher", "R")}, exec, $fabricSend 'notch.open_notch("launcher")' # App Launcher
-bind = {bind_vars.get("prefix_tmux", "SUPER")}, {bind_vars.get("suffix_tmux", "T")}, exec, $fabricSend 'notch.open_notch("tmux")' # Tmux
-bind = {bind_vars.get("prefix_cliphist", "SUPER")}, {bind_vars.get("suffix_cliphist", "V")}, exec, $fabricSend 'notch.open_notch("cliphist")' # Clipboard History
-bind = {bind_vars.get("prefix_toolbox", "SUPER")}, {bind_vars.get("suffix_toolbox", "S")}, exec, $fabricSend 'notch.open_notch("tools")' # Toolbox
-bind = {bind_vars.get("prefix_overview", "SUPER")}, {bind_vars.get("suffix_overview", "TAB")}, exec, $fabricSend 'notch.open_notch("overview")' # Overview
-bind = {bind_vars.get("prefix_wallpapers", "SUPER")}, {bind_vars.get("suffix_wallpapers", "COMMA")}, exec, $fabricSend 'notch.open_notch("wallpapers")' # Wallpapers
-bind = {bind_vars.get("prefix_randwall", "SUPER")}, {bind_vars.get("suffix_randwall", "COMMA")}, exec, $fabricSend 'notch.dashboard.wallpapers.set_random_wallpaper(None, external=True)' # Random Wallpaper
-bind = {bind_vars.get("prefix_mixer", "SUPER")}, {bind_vars.get("suffix_mixer", "M")}, exec, $fabricSend 'notch.open_notch("mixer")' # Audio Mixer
-bind = {bind_vars.get("prefix_emoji", "SUPER")}, {bind_vars.get("suffix_emoji", "PERIOD")}, exec, $fabricSend 'notch.open_notch("emoji")' # Emoji Picker
-bind = {bind_vars.get("prefix_power", "SUPER")}, {bind_vars.get("suffix_power", "ESCAPE")}, exec, $fabricSend 'notch.open_notch("power")' # Power Menu
-bind = {bind_vars.get("prefix_caffeine", "SUPER SHIFT")}, {bind_vars.get("suffix_caffeine", "M")}, exec, $fabricSend 'notch.dashboard.widgets.buttons.caffeine_button.toggle_inhibit(external=True)' # Toggle Caffeine
-bind = {bind_vars.get("prefix_css", "SUPER SHIFT")}, {bind_vars.get("suffix_css", "B")}, exec, $fabricSend 'app.set_css()' # Reload CSS
-bind = {bind_vars.get("prefix_restart_inspector", "SUPER CTRL ALT")}, {bind_vars.get("suffix_restart_inspector", "B")}, exec, killall {APP_NAME}; uwsm-app $(GTK_DEBUG=interactive python {home}/.config/{APP_NAME_CAP}/main.py) # Restart with inspector
-
-# Wallpapers directory: {bind_vars.get("wallpapers_dir", "~/.config/Ax-Shell/assets/wallpapers_example")}
 
 source = {home}/.config/{APP_NAME_CAP}/config/hypr/colors.conf
 
 layerrule = noanim, fabric
-
-exec = cp $wallpaper ~/.current.wall
-
-general {{
-    col.active_border = rgb($primary)
-    col.inactive_border = rgb($surface)
-    gaps_in = 2
-    gaps_out = 4
-    border_size = 2
-    layout = dwindle
-}}
-
-cursor {{
-  no_warps=true
-}}
-
-decoration {{
-    blur {{
-        enabled = yes
-        size = 1
-        passes = 3
-        new_optimizations = yes
-        contrast = 1
-        brightness = 1
-    }}
-    rounding = 14
-    shadow {{
-      enabled = true
-      range = 10
-      render_power = 2
-      color = rgba(0, 0, 0, 0.25)
-    }}
-}}
-
-animations {{
-    enabled = yes
-    bezier = myBezier, 0.4, 0.0, 0.2, 1.0
-    animation = windows, 1, 2.5, myBezier, popin 80%
-    animation = border, 1, 2.5, myBezier
-    animation = fade, 1, 2.5, myBezier
-    animation = workspaces, 1, 2.5, myBezier, {animation_type} 20%
-}}
+# Binds
 """
 
+    def add_bind(key: str, command: str):
+        nonlocal config
+        hotkey = get_hotkey(key)
+        if not hotkey:
+            print(f"Failed to add bind. Not found: {key}")
+            return
+        if not hotkey.get("enabled"):
+            return
+        config += f"bind = {hotkey.get("prefix")},"
+        config += f" {hotkey.get("suffix")},"
+        config += f" exec, {command}\n"
+
+    add_bind("restart"    , f"killall {APP_NAME}; uwsm-app $(python {home}/.config/{APP_NAME_CAP}/main.py)")
+    add_bind("css"        , f"killall {APP_NAME}; uwsm-app $(GTK_DEBUG=interactive python {home}/.config/{APP_NAME_CAP}/main.py)")
+    add_bind("dash"       , "$fabricSend 'notch.open_notch(\"dashboard\")'")
+    add_bind("bluetooth"  , "$fabricSend 'notch.open_notch(\"bluetooth\")'")
+    add_bind("pins"       , "$fabricSend 'notch.open_notch(\"pins\")'")
+    add_bind("kanban"     , "$fabricSend 'notch.open_notch(\"kanban\")'")
+    add_bind("launcher"   , "$fabricSend 'notch.open_notch(\"launcher\")'")
+    add_bind("tmux"       , "$fabricSend 'notch.open_notch(\"tmux\")'")
+    add_bind("cliphist"   , "$fabricSend 'notch.open_notch(\"cliphist\")'")
+    add_bind("toolbox"    , "$fabricSend 'notch.open_notch(\"tools\")'")
+    add_bind("overview"   , "$fabricSend 'notch.open_notch(\"overview\")'")
+    add_bind("wallpapers" , "$fabricSend 'notch.open_notch(\"wallpapers\")'")
+    add_bind("randwall"   , "$fabricSend 'notch.dashboard.wallpapers.set_random_wallpaper(None, external=True)'")
+    add_bind("mixer"      , "$fabricSend 'notch.open_notch(\"mixer\")'")
+    add_bind("emoji"      , "$fabricSend 'notch.open_notch(\"emoji\")'")
+    add_bind("power"      , "$fabricSend 'notch.open_notch(\"power\")'")
+    add_bind("caffeine"   , "$fabricSend 'notch.dashboard.widgets.buttons.caffeine_button.toggle_inhibit(external=True)'")
+
+    return config
 
 def ensure_face_icon():
     """
@@ -363,12 +327,12 @@ def start_config():
     ensure_matugen_config()
     print(f"{time.time():.4f}: start_config: Ensuring face icon...")
     ensure_face_icon()
-    print(f"{time.time():.4f}: start_config: Generating hypr conf...")
 
     hypr_config_dir = os.path.expanduser(f"~/.config/{APP_NAME_CAP}/config/hypr/")
     os.makedirs(hypr_config_dir, exist_ok=True)
     # Usar APP_NAME para el nombre del archivo .conf para que coincida con SOURCE_STRING corregido
     hypr_conf_path = os.path.join(hypr_config_dir, f"{APP_NAME}.conf")
+    print(f"{time.time():.4f}: start_config: Generating hypr conf...")
     try:
         with open(hypr_conf_path, "w") as f:
             f.write(generate_hyprconf())
@@ -395,3 +359,21 @@ def start_config():
     except Exception as e:
         print(f"An error occurred initiating hyprctl reload: {e}")
     print(f"{time.time():.4f}: start_config: Finished initiating hyprctl reload.")
+
+def get_hotkey(key: str) -> dict|None:
+    hotkeys = bind_vars.get("hotkeys")
+    if not hotkeys:
+        settings_constants.DEFAULTS.get(key)
+    return hotkeys.get(key)
+
+def get_hotkey_enabled(key: str) -> bool|None:
+    hotkey = get_hotkey(key)
+    return hotkey.get("enabled") if hotkey else None
+
+def get_hotkey_prefix(key: str) -> str|None:
+    hotkey = get_hotkey(key)
+    return hotkey.get("prefix") if hotkey else None
+
+def get_hotkey_suffix(key: str) -> str|None:
+    hotkey = get_hotkey(key)
+    return hotkey.get("suffix") if hotkey else None
