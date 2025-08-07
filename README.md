@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://github.com/Axenide/Ax-Shell">
+<a href="https://github.com/NonExistPlayer/nxsh">
   <img src="assets/cover.png">
   </a>
 </p>
