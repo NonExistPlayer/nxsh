@@ -29,7 +29,7 @@ from .data import (
     PANEL_POSITION_DEFAULT,
     PANEL_POSITION_KEY,
 )
-from .settings_utils import backup_and_replace, bind_vars, start_config
+from .settings_utils import backup_and_replace, bind_vars, get_hotkey, start_config
 
 
 class HyprConfGUI(Window):
@@ -110,6 +110,9 @@ class HyprConfGUI(Window):
         keybind_grid.set_margin_top(5)
         keybind_grid.set_margin_bottom(5)
 
+        checkbox_label = Label(
+            markup="<b>Enabled</b>", h_align="start", style="margin-bottom: 5px;"
+        )
         action_label = Label(
             markup="<b>Action</b>", h_align="start", style="margin-bottom: 5px;"
         )
@@ -123,49 +126,62 @@ class HyprConfGUI(Window):
             markup="<b>Key</b>", h_align="start", style="margin-bottom: 5px;"
         )
 
-        keybind_grid.attach(action_label, 0, 0, 1, 1)
-        keybind_grid.attach(modifier_label, 1, 0, 1, 1)
-        keybind_grid.attach(separator_label, 2, 0, 1, 1)
-        keybind_grid.attach(key_label, 3, 0, 1, 1)
+        keybind_grid.attach(checkbox_label, 0, 0, 1, 1)
+        keybind_grid.attach(action_label, 1, 0, 1, 1)
+        keybind_grid.attach(modifier_label, 2, 0, 1, 1)
+        keybind_grid.attach(separator_label, 3, 0, 1, 1)
+        keybind_grid.attach(key_label, 4, 0, 1, 1)
 
         self.entries = []
         bindings = [
-            (f"Reload {APP_NAME_CAP}", "prefix_restart", "suffix_restart"),
-            ("Message", "prefix_axmsg", "suffix_axmsg"),
-            ("Dashboard", "prefix_dash", "suffix_dash"),
-            ("Bluetooth", "prefix_bluetooth", "suffix_bluetooth"),
-            ("Pins", "prefix_pins", "suffix_pins"),
-            ("Kanban", "prefix_kanban", "suffix_kanban"),
-            ("App Launcher", "prefix_launcher", "suffix_launcher"),
-            ("Tmux", "prefix_tmux", "suffix_tmux"),
-            ("Clipboard History", "prefix_cliphist", "suffix_cliphist"),
-            ("Toolbox", "prefix_toolbox", "suffix_toolbox"),
-            ("Overview", "prefix_overview", "suffix_overview"),
-            ("Wallpapers", "prefix_wallpapers", "suffix_wallpapers"),
-            ("Random Wallpaper", "prefix_randwall", "suffix_randwall"),
-            ("Audio Mixer", "prefix_mixer", "suffix_mixer"),
-            ("Emoji Picker", "prefix_emoji", "suffix_emoji"),
-            ("Power Menu", "prefix_power", "suffix_power"),
-            ("Toggle Caffeine", "prefix_caffeine", "suffix_caffeine"),
-            ("Reload CSS", "prefix_css", "suffix_css"),
-            (
-                "Restart with inspector",
-                "prefix_restart_inspector",
-                "suffix_restart_inspector",
-            ),
+            (f"Reload {APP_NAME_CAP}", "restart"),
+            ("Dashboard", "dash"),
+            ("Bluetooth", "bluetooth"),
+            ("Pins", "pins"),
+            ("Kanban", "kanban"),
+            ("App Launcher", "launcher"),
+            ("Tmux", "tmux"),
+            ("Clipboard History", "cliphist"),
+            ("Toolbox", "toolbox"),
+            ("Overview", "overview"),
+            ("Wallpapers", "wallpapers"),
+            ("Random Wallpaper", "randwall"),
+            ("Audio Mixer", "mixer"),
+            ("Emoji Picker", "emoji"),
+            ("Power Menu", "power"),
+            ("Toggle Caffeine", "caffeine"),
+            ("Reload CSS", "css"),
+            ("Restart with inspector", "inspector"),
         ]
 
-        for i, (label_text, prefix_key, suffix_key) in enumerate(bindings):
+        for i, (label_text, key) in enumerate(bindings):
             row = i + 1
+            hotkey = get_hotkey(key)
+            if not hotkey:
+                print(f"Failed to get hotkey: {key}")
+                continue
+
+            enabled = Gtk.Switch(active=bool(hotkey.get("enabled")))
+            keybind_grid.attach(enabled, 0, row, 1, 1)
+            # disable stretching
+            enabled.set_halign(Gtk.Align.CENTER)
+            enabled.set_valign(Gtk.Align.CENTER)
+
             binding_label = Label(label=label_text, h_align="start")
-            keybind_grid.attach(binding_label, 0, row, 1, 1)
-            prefix_entry = Entry(text=bind_vars.get(prefix_key, ""))
-            keybind_grid.attach(prefix_entry, 1, row, 1, 1)
+            keybind_grid.attach(binding_label, 1, row, 1, 1)
+
+            prefix_entry = Entry(text=hotkey.get("prefix"))
+            keybind_grid.attach(prefix_entry, 2, row, 1, 1)
+
             plus_label = Label(label="+", h_align="center")
-            keybind_grid.attach(plus_label, 2, row, 1, 1)
-            suffix_entry = Entry(text=bind_vars.get(suffix_key, ""))
-            keybind_grid.attach(suffix_entry, 3, row, 1, 1)
-            self.entries.append((prefix_key, suffix_key, prefix_entry, suffix_entry))
+            keybind_grid.attach(plus_label, 3, row, 1, 1)
+
+            suffix_entry = Entry(text=hotkey.get("suffix"))
+            keybind_grid.attach(suffix_entry, 4, row, 1, 1)
+
+            self.entries.append(
+                (enabled, key, hotkey, prefix_entry, suffix_entry)
+            )
 
         main_vbox.add(keybind_grid)
         return scrolled_window
@@ -972,9 +988,14 @@ class HyprConfGUI(Window):
 
     def on_accept(self, widget):
         current_bind_vars_snapshot = {}
-        for prefix_key, suffix_key, prefix_entry, suffix_entry in self.entries:
-            current_bind_vars_snapshot[prefix_key] = prefix_entry.get_text()
-            current_bind_vars_snapshot[suffix_key] = suffix_entry.get_text()
+        for enabled, key, hotkey, prefix_entry, suffix_entry in self.entries:
+            if not "hotkeys" in current_bind_vars_snapshot:
+                current_bind_vars_snapshot["hotkeys"] = {}
+            current_bind_vars_snapshot["hotkeys"][key] = {
+                "prefix": prefix_entry.get_text(),
+                "suffix": suffix_entry.get_text(),
+                "enabled": enabled.get_active()
+            }
 
         current_bind_vars_snapshot["wallpapers_dir"] = (
             self.wall_dir_chooser.get_filename()
@@ -1235,9 +1256,10 @@ class HyprConfGUI(Window):
             settings_utils.bind_vars.clear()
             settings_utils.bind_vars.update(DEFAULTS.copy())
 
-            for prefix_key, suffix_key, prefix_entry, suffix_entry in self.entries:
-                prefix_entry.set_text(settings_utils.bind_vars[prefix_key])
-                suffix_entry.set_text(settings_utils.bind_vars[suffix_key])
+            for enabled, key, hotkey, prefix_entry, suffix_entry in self.entries:
+                enabled.set_active(hotkey.get("enabled"))
+                prefix_entry.set_text(hotkey.get("prefix"))
+                suffix_entry.set_text(hotkey.get("suffix"))
 
             self.wall_dir_chooser.set_filename(
                 settings_utils.bind_vars["wallpapers_dir"]
