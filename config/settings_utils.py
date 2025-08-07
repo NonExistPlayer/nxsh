@@ -265,7 +265,7 @@ layerrule = noanim, fabric
         config += f" exec, {command}\n"
 
     add_bind("restart"    , f"killall {APP_NAME}; uwsm-app $(python {home}/.config/{APP_NAME_CAP}/main.py)")
-    add_bind("css"        , f"killall {APP_NAME}; uwsm-app $(GTK_DEBUG=interactive python {home}/.config/{APP_NAME_CAP}/main.py)")
+    add_bind("inspector"  , f"killall {APP_NAME}; uwsm-app $(GTK_DEBUG=interactive python {home}/.config/{APP_NAME_CAP}/main.py)")
     add_bind("dash"       , "$fabricSend 'notch.open_notch(\"dashboard\")'")
     add_bind("bluetooth"  , "$fabricSend 'notch.open_notch(\"bluetooth\")'")
     add_bind("pins"       , "$fabricSend 'notch.open_notch(\"pins\")'")
@@ -281,6 +281,7 @@ layerrule = noanim, fabric
     add_bind("emoji"      , "$fabricSend 'notch.open_notch(\"emoji\")'")
     add_bind("power"      , "$fabricSend 'notch.open_notch(\"power\")'")
     add_bind("caffeine"   , "$fabricSend 'notch.dashboard.widgets.buttons.caffeine_button.toggle_inhibit(external=True)'")
+    add_bind("css"        , "$fabricSend 'app.set_css()'")
 
     return config
 
