@@ -50,7 +50,13 @@ class WallpaperSelector(Box):
                             print(f"Error renaming file {full_path}: {e}")
 
         # Refresh the file list after potential renaming
-        self.files = sorted([f for f in os.listdir(data.WALLPAPERS_DIR) if self._is_image(f)])
+        self.files = []
+        for root, _, files in os.walk(data.WALLPAPERS_DIR):
+            for file in files:
+                if self._is_image(file):
+                    full_path = os.path.join(root, file)
+                    self.files.append(full_path)
+        self.files.sort()
         self.thumbnails = []
         self.thumbnail_queue = []
         self.executor = ThreadPoolExecutor(max_workers=4)  # Shared executor
